@@ -1,0 +1,1 @@
+don't straighten fully, keep acting as if sneaking after getting up. don't crouch down again

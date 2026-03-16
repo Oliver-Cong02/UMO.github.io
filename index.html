@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMO: Unified In-Context Learning Unlocks Motion Foundation Model Priors</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ========== NAV ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">UMO</a>
+      <div class="nav-links">
+        <a href="#text2motion">Text-to-Motion</a>
+        <a href="#inpainting">Inpainting</a>
+        <a href="#editing">Editing</a>
+        <a href="#trajectory">Trajectory</a>
+        <a href="#obstacle">Obstacle</a>
+        <a href="#reaction">Reaction</a>
+        <a href="#ablation">Ablation</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+
+      <h1 class="hero-title">
+        <span class="title-accent">UMO</span>: Unified In-Context Learning Unlocks<br>Motion Foundation Model Priors
+      </h1>
+      <p class="hero-subtitle">One Unified Framework &middot; Three Meta-Operations &middot; Diverse Motion Tasks</p>
+
+      <!-- Authors -->
+      <div class="hero-authors">
+        <p class="author-list">
+          <a href="https://oliver-cong02.github.io/" class="author" target="_blank">Xiaoyan Cong<sup>1*</sup></a>,
+          <a href="https://kunkun0w0.github.io/" class="author" target="_blank">Zekun Li<sup>1*</sup></a>,
+          <a href="https://frank-zy-dou.github.io/" class="author" target="_blank">Zhiyang Dou<sup>2</sup></a>,
+          <a href="https://lhy.xyz/" class="author" target="_blank">Hongyu Li<sup>1</sup></a>,
+          <a href="https://otaheri.github.io/" class="author" target="_blank">Omid Taheri<sup>3</sup></a>,
+          <a href="https://ericguo5513.github.io/" class="author" target="_blank">Chuan Guo<sup>4</sup></a>,
+          <a href="https://scholar.google.com/citations?hl=en&user=BwE_L4MAAAAJ&view_op=list_works&sortby=pubdate" class="author" target="_blank">Abhay Mittal<sup>4</sup></a>,
+          <a href="https://sizhean.github.io/" class="author" target="_blank">Sizhe An<sup>4</sup></a>,
+          <a href="https://i.cs.hku.hk/~taku/" class="author" target="_blank">Taku Komura<sup>5</sup></a>,
+          <a href="https://cdfg.mit.edu/wojciech" class="author" target="_blank">Wojciech Matusik<sup>2</sup></a>,
+          <a href="https://is.mpg.de/ps/person/black" class="author" target="_blank">Michael J. Black<sup>3</sup></a>,
+          <a href="https://srinathsridhar.com/" class="author" target="_blank">Srinath Sridhar<sup>1</sup></a>
+        </p>
+        <p class="institution-list">
+          <sup>1</sup>Brown University &nbsp;
+          <sup>2</sup>Massachusetts Institute of Technology &nbsp;
+          <sup>3</sup>Max-Planck Institute for Intelligent Systems
+          <br>
+          <sup>4</sup>Meta Reality Lab &nbsp;
+          <sup>5</sup>The University of Hong Kong
+        </p>
+      </div>
+
+      <!-- Paper / Code / Arxiv icons -->
+      <div class="hero-actions">
+        <a href="https://oliver-cong02.github.io/" class="btn btn-outline" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+          Paper
+        </a>
+        <a href="https://oliver-cong02.github.io/" class="btn btn-outline" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          Code
+        </a>
+        <a href="https://oliver-cong02.github.io/" class="btn btn-outline" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="6" x2="12" y2="14"/><polyline points="8 10 12 6 16 10"/></svg>
+          arXiv
+        </a>
+      </div>
+
+      <!-- Explore -->
+      <div class="hero-actions" style="margin-top: 1.5rem;">
+        <a href="#text2motion" class="btn btn-primary">Explore Results</a>
+      </div>
+      <div class="hero-figures">
+        <div class="hero-fig-item hero-fig-teaser">
+          <img src="assets/images/teaser.png" alt="UMO Teaser: diverse motion tasks as compositions of atomic operations">
+        </div>
+        <div class="hero-fig-item hero-fig-radar">
+          <img src="assets/images/radar_chart.png" alt="Radar chart comparing UMO across tasks and metrics">
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+
+  <!-- ========== TEXT-TO-MOTION ========== -->
+  <section class="section section-alt" id="text2motion">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">In-Domain</span>
+        <h2 class="section-title">Text-to-Motion Generation</h2>
+        <p class="section-desc">Generating realistic human motions from natural language descriptions.</p>
+        <p class="carousel-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18l-6-6 6-6M17 6l6 6-6 6"/></svg> Use arrows to browse more examples</p>
+      </div>
+
+      <div class="carousel">
+        <div class="carousel-viewport">
+          <!-- Slide 1 -->
+          <div class="carousel-slide active">
+            <div class="demo-block glass-card">
+              <div class="t2m-grid">
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"A man postures his arms like holding a dance partner and dances the waltz from the left hand side to the right hand side."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/t2m/humanml3d_full/000750_0_ours.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"Person is jogging and then gets down and walks like an ape and then gets back up and jogs again."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/t2m/humanml3d_full/000824_0_ours.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"Person clasps both hands together then waves arms to side then goes down on right knee bent over ties something on feet then gets up."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/t2m/humanml3d_full/000921_0_ours.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="t2m-grid">
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"A person walks forward then turns completely around and does a cartwheel."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/t2m/humanml3d_full/001008_0_ours.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"A person shoves their arms out in an angry fashion."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/t2m/humanml3d_full/001082_0_ours.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"A man hops on his right leg five times, makes a small jump, then steps forward into a strong push with both hands."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/t2m/humanml3d_full/001214_0_ours.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="t2m-grid">
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"A person dribbles a ball with one hand then the other and proceeds to shoot ball into goal with both hands."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/t2m/humanml3d_full/001775_0_ours.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"A man steps forward and does a handstand."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/t2m/humanml3d_full/002103_0_ours.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"A person dribbles a basketball through their legs then runs quickly."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/t2m/humanml3d_full/005300_0_ours.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn carousel-prev" aria-label="Previous">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="carousel-btn carousel-next" aria-label="Next">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="carousel-dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TEMPORAL INPAINTING ========== -->
+  <section class="section" id="inpainting">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Out-of-Domain</span>
+        <h2 class="section-title">Temporal Inpainting</h2>
+        <p class="section-desc">Keyframe infilling, prediction, backcasting, and in-betweening.</p>
+        <p class="inpainting-legend"><span class="legend-dot" style="background: steelblue;"></span> Keyframe (given) <span class="legend-dot" style="background: olivedrab; margin-left: 1rem;"></span> Generated (ours)</p>
+      </div>
+
+      <div class="inpainting-gallery">
+        <!-- Keyframe Infilling -->
+        <div class="inpainting-section glass-card">
+          <h4 class="inpainting-heading">Keyframe Infilling</h4>
+          <div class="carousel">
+            <div class="carousel-viewport">
+              <div class="carousel-slide active">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person stumbles forward and back almost falling over."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/000207_0_infilling.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person hops forward with both legs and after a few hops they hop on top of something then back down right after."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/002950_0_infilling.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person bends over to begin charging forward, turns around with arms raised, and charges back to original position."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/003179_0_infilling.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person runs forward and jumps over something, then turns around and jumps back over it."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/003703_0_infilling.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"The drunk guy struggles to walk down the street."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/005037_0_infilling.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person dribbles a basketball through their legs then runs quickly."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/005300_0_infilling.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person is doing a dance."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/005813_0_infilling.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person lifts both arms out to their side and runs forward in a figure 8 pattern."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/006433_0_infilling.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person is walking in a counter-clockwise circle while bringing their knees up as they walk."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/009477_0_infilling.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-btn carousel-prev" aria-label="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <button class="carousel-btn carousel-next" aria-label="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <div class="carousel-dots"></div>
+          </div>
+        </div>
+        <!-- Prediction -->
+        <div class="inpainting-section glass-card">
+          <h4 class="inpainting-heading">Prediction</h4>
+          <div class="carousel">
+            <div class="carousel-viewport">
+              <div class="carousel-slide active">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A man stands up, walks clock-wise in a circle, then sits back down."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/000066_0_prediction.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person walking in a crouched over position."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/003423_0_prediction.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person runs forward and jumps over something, then turns around and jumps back over it."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/003703_0_prediction.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"The person walks in a straight line and places their right hand to support their weight against something."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/003807_0_prediction.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"Person is hunched over creeping diagonally down."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/004668_0_prediction.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person is walking, turns back and to their left, proceeds to walk again, trips, then turns back once more, limping now."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/007559_0_prediction.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person quickly runs straight forward, then bends down and picks up something with both hands."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/008208_0_prediction.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person is walking in a counter-clockwise circle while bringing their knees up as they walk."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/009477_0_prediction.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"The man walks in a forward facing zig zag motion."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/013007_0_prediction.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-btn carousel-prev" aria-label="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <button class="carousel-btn carousel-next" aria-label="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <div class="carousel-dots"></div>
+          </div>
+        </div>
+        <!-- Backcasting -->
+        <div class="inpainting-section glass-card">
+          <h4 class="inpainting-heading">Backcasting</h4>
+          <div class="carousel">
+            <div class="carousel-viewport">
+              <div class="carousel-slide active">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person standing in place raises both arms to the side raising them above eye level."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/000534_0_backcasting.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person takes a step forward, moves to their right, then continues forward with their right hand on a rail."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/000787_0_backcasting.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person walking one way and then increasing pace running back."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/001617_0_backcasting.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"The person walks in a straight line and places their right hand to support their weight against something."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/003807_0_backcasting.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"Person is hunched over creeping diagonally down."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/004668_0_backcasting.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person is walking, turns back and to their left, proceeds to walk again, trips, then turns back once more, limping now."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/007559_0_backcasting.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A man walks forward, then squats to pick something up with both hands, stands back up, and resumes walking."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/008463_0_backcasting.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person is walking in a counter-clockwise circle while bringing their knees up as they walk."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/009477_0_backcasting.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person walks and places a box on the ground."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/011935_0_backcasting.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-btn carousel-prev" aria-label="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <button class="carousel-btn carousel-next" aria-label="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <div class="carousel-dots"></div>
+          </div>
+        </div>
+        <!-- In-Betweening -->
+        <div class="inpainting-section glass-card">
+          <h4 class="inpainting-heading">In-Betweening</h4>
+          <div class="carousel">
+            <div class="carousel-viewport">
+              <div class="carousel-slide active">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"Person is jogging and then gets down and walks like an ape and then gets back up and jogs again."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/000824_0_inbetween.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person jogs forward and semi circles around to the right and then to the left."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/000904_0_inbetween.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"Person is hunched over creeping diagonally down."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/004668_0_inbetween.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"Someone walks with difficulty on their right side, then tries to run."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/005628_0_inbetween.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person is walking, turns back and to their left, proceeds to walk again, trips, then turns back once more, limping now."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/007559_0_inbetween.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A man walks forward, then squats to pick something up with both hands, stands back up, and resumes walking."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/008463_0_inbetween.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="t2m-grid">
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person is walking in a counter-clockwise circle while bringing their knees up as they walk."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/009477_0_inbetween.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"A person walks down a hill and places a box on the ground."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/011935_0_inbetween.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                  <div class="t2m-item">
+                    <p class="t2m-prompt">"The man walks in a forward facing zig zag motion."</p>
+                    <div class="video-placeholder has-video"><video src="assets/videos/inpainting/humanml3d_inpainting/013007_0_inbetween.mp4" autoplay loop muted playsinline></video></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-btn carousel-prev" aria-label="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <button class="carousel-btn carousel-next" aria-label="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <div class="carousel-dots"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== INSTRUCTION-BASED EDITING ========== -->
+  <section class="section section-alt" id="editing">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Out-of-Domain</span>
+        <h2 class="section-title">Instruction-Based Motion Editing</h2>
+        <p class="section-desc">Text-guided motion editing.</p>
+        <p class="carousel-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18l-6-6 6-6M17 6l6 6-6 6"/></svg> Use arrows to browse more examples</p>
+      </div>
+
+      <div class="carousel">
+        <div class="carousel-viewport">
+          <!-- Example 1: 003408 -->
+          <div class="carousel-slide active">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Start later and do one jump instead of a few"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003408_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003408_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003408_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 2: 006259 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Spread arms out more, sway side to side, bending from waist"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/006259_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/006259_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/006259_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 3: 003547 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Get up at the end with right leg first instead, start with the left leg"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003547_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003547_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003547_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 4: 006056 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Don't straighten fully, keep acting as if sneaking after getting up. Don't crouch down again"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/006056_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/006056_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/006056_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 5: 000336 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Flip sides, i.e. start with your right arm and left leg, facing opposite"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000336_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000336_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000336_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 6: 000465 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Just take a single step"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000465_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000465_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000465_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 7: 000846 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Maintain the hands at chest level"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000846_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000846_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000846_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 8: 000849 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Lower the left elbow and raise the opposite hand while gesturing."</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000849_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000849_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/000849_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 9: 001429 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Start slower"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/001429_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/001429_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/001429_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 10: 001786 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "More energy"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/001786_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/001786_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/001786_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 11: 002423 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Start the arm motion earlier and repeat"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/002423_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/002423_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/002423_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 12: 002985 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Turn your head instead of your arms"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/002985_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/002985_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/002985_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 13: 003344 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Shake the head while doing the action and don't tilt the head on the left side"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003344_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003344_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003344_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 14: 003863 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Don't move the upright hands left and right, just keep them straight"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003863_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003863_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/003863_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- Example 15: 004742 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="demo-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Editing Instruction: "Only move the hand forward, back and to your right"</span>
+              </div>
+              <div class="comparison-grid comparison-grid-3">
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/004742_src.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">Source Motion</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/004742_motionfix.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">TMED</p></div>
+                <div class="grid-item"><div class="video-placeholder has-video"><video src="assets/videos/editing/motionfix/004742_ours.mp4" autoplay loop muted playsinline></video></div><p class="grid-label">UMO (Ours)</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn carousel-prev" aria-label="Previous">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="carousel-btn carousel-next" aria-label="Next">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="carousel-dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TRAJECTORY FOLLOWING ========== -->
+  <section class="section" id="trajectory">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Stress Test</span>
+        <h2 class="section-title">Trajectory Following</h2>
+        <p class="section-desc">Follow geometric trajectories while maintaining natural motion.</p>
+      </div>
+
+      <div class="demo-block glass-card">
+        <div class="t2m-grid">
+          <div class="t2m-item">
+            <p class="t2m-prompt">{"type":"circular_arc", "start":[0.0, 0.0], "end":[2.92, 5.35], "center":[2.29, 2.22], "radius":3.19, "direction":"clockwise"}</p>
+            <div class="video-placeholder has-video"><video src="assets/videos/geometric/traj/L2_001037.mp4" autoplay loop muted playsinline></video></div>
+          </div>
+          <div class="t2m-item">
+            <p class="t2m-prompt">{"type":"cubic_bezier","params":{"start":[0.0,0.0],"end":[3.54,4.15],"P0":[0.0,0.0],"P1":[-1.02,3.24],"P2":[4.55,0.92],"P3":[3.54,4.15]}}</p>
+            <div class="video-placeholder has-video"><video src="assets/videos/geometric/traj/L3_001016.mp4" autoplay loop muted playsinline></video></div>
+          </div>
+          <div class="t2m-item">
+            <p class="t2m-prompt">{"type":"cubic_bezier","params":{"start":[0.0,0.0],"end":[3.98,2.03],"P0":[0.0,0.0],"P1":[0.47,2.34],"P2":[3.52,-0.31],"P3":[3.98,2.03]}}</p>
+            <div class="video-placeholder has-video"><video src="assets/videos/geometric/traj/L3_001049.mp4" autoplay loop muted playsinline></video></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== OBSTACLE AVOIDANCE ========== -->
+  <section class="section section-alt" id="obstacle">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Stress Test</span>
+        <h2 class="section-title">Obstacle Avoidance</h2>
+        <p class="section-desc">Navigate from point A to point B while avoiding obstacles.</p>
+      </div>
+
+      <div class="demo-block glass-card">
+        <div class="t2m-grid t2m-grid-2">
+          <div class="t2m-item">
+            <p class="t2m-prompt">A person walks from (0.00, 0.00) to (3.67, 5.36). Avoiding 2 obstacles at (0.71, 1.09, r=0.25), (2.86, 4.31, r=0.35), where r is the safety radius in meters.</p>
+            <div class="video-placeholder has-video"><video src="assets/videos/geometric/obstacle/L3_000457.mp4" autoplay loop muted playsinline></video></div>
+          </div>
+          <div class="t2m-item">
+            <p class="t2m-prompt">A person walks from (-0.00, 0.00) to (3.28, 6.41). Avoiding 3 obstacles at (0.72, 3.65, r=0.43), (1.46, 3.98, r=0.42), (0.32, 2.93, r=0.24), where r is the safety radius in meters.</p>
+            <div class="video-placeholder has-video"><video src="assets/videos/geometric/obstacle/L3_001010.mp4" autoplay loop muted playsinline></video></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== REACTION GENERATION ========== -->
+  <section class="section section-alt" id="reaction">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Stress Test</span>
+        <h2 class="section-title">Dual-Identity Reaction Generation</h2>
+        <p class="section-desc">Two-person interaction generation — entirely absent from single-person pretraining.</p>
+        <p class="carousel-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18l-6-6 6-6M17 6l6 6-6 6"/></svg> Use arrows to browse more examples</p>
+        <p class="inpainting-legend"><span class="legend-dot" style="background: steelblue;"></span> Source <span class="legend-dot" style="background: olivedrab; margin-left: 1rem;"></span> Generated </p>
+      </div>
+
+      <div class="carousel">
+        <div class="carousel-viewport">
+          <!-- Slide 1 -->
+          <div class="carousel-slide active">
+            <div class="demo-block glass-card">
+              <div class="t2m-grid t2m-grid-2">
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"Two people stand facing each other, with one person folding his/her hands and bending down to bow. The other individual also folds his/her hands and responds with a bow."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/reaction/G050T004A024R024.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"In a confrontation, one forcefully slaps another's left cheek, turning the slapped person's body to the right."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/reaction/G013T003A010R001.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="t2m-grid t2m-grid-2">
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"One person kicks the other person's left shin with his/her left foot, causing the other person to trip and sit on the ground."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/reaction/G014T001A005R001.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"The first person covers his/her face and walks towards the second person, who raises his/her right palm. They clap hands."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/reaction/G055T003A016R005.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="t2m-grid t2m-grid-2">
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"The first person gently pats the upper right part of the second person's back with his/her left hand from the right side."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/reaction/G003T002A011R005.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"The two people stand facing each other, with one person placing his/her right hand in front and bowing. Upon seeing this, the second person raises his/her left hand."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/reaction/G018T005A024R015.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Slide 4 -->
+          <div class="carousel-slide">
+            <div class="demo-block glass-card">
+              <div class="t2m-grid t2m-grid-2">
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"One person stands opposite another and raises his/her right hand to wave. Simultaneously, the second person raises his/her left hand to wave back."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/reaction/G016T000A002R018.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+                <div class="t2m-item">
+                  <p class="t2m-prompt">"Two people stand face to face, then both raise their hands and give each other a high-five."</p>
+                  <div class="video-placeholder has-video"><video src="assets/videos/reaction/G020T001A016R016.mp4" autoplay loop muted playsinline></video></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn carousel-prev" aria-label="Previous">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="carousel-btn carousel-next" aria-label="Next">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="carousel-dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABLATION ========== -->
+  <section class="section" id="ablation">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Ablation</span>
+        <h2 class="section-title">Architecture Ablation</h2>
+        <p class="section-desc">Comparing four conditioning architectures for in-context feature integration.</p>
+        <p class="carousel-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18l-6-6 6-6M17 6l6 6-6 6"/></svg> Use arrows to browse more examples</p>
+      </div>
+
+      <div class="ablation-gallery">
+
+        <!-- Temporal Inpainting Ablation (HumanML3D) — 2×2 -->
+        <div class="ablation-section glass-card">
+          <h3 class="ablation-heading">Temporal Inpainting (Keyframe Infilling)</h3>
+          <div class="carousel">
+            <div class="carousel-viewport">
+              <!-- Slide 1: 000066_0 -->
+              <div class="carousel-slide active">
+                <div class="demo-block">
+                  <p class="t2m-prompt">"a man stands up, walks clock-wise in a circle, then sits back down."</p>
+                  <div class="ablation-grid-2x2">
+                    <div class="grid-item">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/humanml3d_architecture_ablation_keyframe/000066_0_add.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">Temporal Fusion (Ours)</p>
+                    </div>
+                    <div class="grid-item">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/humanml3d_architecture_ablation_keyframe/000066_0_adaln.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">AdaLN</p>
+                    </div>
+                    <div class="grid-item">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/humanml3d_architecture_ablation_keyframe/000066_0_concat.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">Sequential Concatenation</p>
+                    </div>
+                    <div class="grid-item">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/humanml3d_architecture_ablation_keyframe/000066_0_controlnet.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">ControlNet</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Slide 2: 000118_0 -->
+              <div class="carousel-slide">
+                <div class="demo-block">
+                  <p class="t2m-prompt">"person walks forwards slowly and normally without swinging arms"</p>
+                  <div class="ablation-grid-2x2">
+                    <div class="grid-item">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/humanml3d_architecture_ablation_keyframe/000118_0_add.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">Temporal Fusion (Ours)</p>
+                    </div>
+                    <div class="grid-item">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/humanml3d_architecture_ablation_keyframe/000118_0_adaln.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">AdaLN</p>
+                    </div>
+                    <div class="grid-item">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/humanml3d_architecture_ablation_keyframe/000118_0_concat.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">Sequential Concatenation</p>
+                    </div>
+                    <div class="grid-item">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/humanml3d_architecture_ablation_keyframe/000118_0_controlnet.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">ControlNet</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-btn carousel-prev" aria-label="Previous">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="carousel-btn carousel-next" aria-label="Next">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <div class="carousel-dots"></div>
+          </div>
+        </div>
+
+        <!-- Motion Editing Ablation (MotionFix) — src + 2×2 -->
+        <div class="ablation-section glass-card">
+          <h3 class="ablation-heading">Instruction-Based Motion Editing</h3>
+          <div class="carousel">
+            <div class="carousel-viewport">
+              <!-- Slide 1: 000846 -->
+              <div class="carousel-slide active">
+                <div class="demo-block">
+                  <p class="t2m-prompt">Editing Instruction: "Maintain the hands at chest level"</p>
+                  <div class="ablation-src-panel">
+                    <div class="ablation-src-center">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/000846_src.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">Source</p>
+                    </div>
+                    <div class="ablation-grid-2x2">
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/000846_add.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">Temporal Fusion (Ours)</p>
+                      </div>
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/000846_adaln.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">AdaLN</p>
+                      </div>
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/000846_concat.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">Sequential Concatenation</p>
+                      </div>
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/000846_controlnet.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">ControlNet</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Slide 2: 001429 -->
+              <div class="carousel-slide">
+                <div class="demo-block">
+                  <p class="t2m-prompt">Editing Instruction: "start slower"</p>
+                  <div class="ablation-src-panel">
+                    <div class="ablation-src-center">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/001429_src.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">Source</p>
+                    </div>
+                    <div class="ablation-grid-2x2">
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/001429_add.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">Temporal Fusion (Ours)</p>
+                      </div>
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/001429_adaln.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">AdaLN</p>
+                      </div>
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/001429_concat.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">Sequential Concatenation</p>
+                      </div>
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/001429_controlnet.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">ControlNet</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Slide 3: 001786 -->
+              <div class="carousel-slide">
+                <div class="demo-block">
+                  <p class="t2m-prompt">Editing Instruction: "more energy"</p>
+                  <div class="ablation-src-panel">
+                    <div class="ablation-src-center">
+                      <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/001786_src.mp4" autoplay loop muted playsinline></video></div>
+                      <p class="grid-label">Source</p>
+                    </div>
+                    <div class="ablation-grid-2x2">
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/001786_add.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">Temporal Fusion (Ours)</p>
+                      </div>
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/001786_adaln.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">AdaLN</p>
+                      </div>
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/001786_concat.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">Sequential Concatenation</p>
+                      </div>
+                      <div class="grid-item">
+                        <div class="video-placeholder has-video"><video src="assets/videos/ablation/motionfix_architecture_ablation/001786_controlnet.mp4" autoplay loop muted playsinline></video></div>
+                        <p class="grid-label">ControlNet</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-btn carousel-prev" aria-label="Previous">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="carousel-btn carousel-next" aria-label="Next">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <div class="carousel-dots"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <p>&nbsp;</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

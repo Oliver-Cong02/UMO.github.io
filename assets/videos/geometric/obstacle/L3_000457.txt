@@ -1,0 +1,1 @@
+A person walks from (0.00, 0.00) to (3.67, 5.36). Avoiding 2 obstacles at (0.71, 1.09, r=0.25), (2.86, 4.31, r=0.35), where r is the safety radius in meters.
