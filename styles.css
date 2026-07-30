@@ -193,7 +193,7 @@ a:hover { color: #2563eb; }
 
 .hero-venue {
   display: inline-block;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   padding: 0.3rem 0.9rem;
   border: 1px solid var(--card-border);
   border-radius: 999px;
